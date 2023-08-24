@@ -79,12 +79,21 @@ public class IShopServiceImpl implements IShopService {
         String s = HttpUtil.get(shopUrl);
 
         JSONObject jsonObject = JSONObject.parseObject(s);
-        Set<String> shopIdSet = jsonObject.keySet();
 
-        for (String iShopId : shopIdSet) {
+        List<IShop> shopList = jsonObject.keySet().stream().map(iShopId -> {
             JSONObject shop = jsonObject.getJSONObject(iShopId);
-            IShop iShop = new IShop(iShopId, shop);
-            iShopMapper.insert(iShop);
+
+            return new IShop(iShopId, shop);
+        }).collect(Collectors.toList());
+
+//        List<IShop> shopList = new ArrayList<>();
+//        for (String iShopId : shopIdSet) {
+//            JSONObject shop = jsonObject.getJSONObject(iShopId);
+//            IShop iShop = new IShop(iShopId, shop);
+//            iShopMapper.insert(iShop);
+//        }
+        if (!shopList.isEmpty()) {
+            iShopMapper.inserts(shopList);
         }
     }
 
