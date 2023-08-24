@@ -39,5 +39,5 @@ public interface IShopMapper extends BaseMapperX<IShop> {
      *
      * @param shopList 购物清单
      */
-    void inserts(@Param("shopList") List<IShop> shopList);
+    void inserts(@Param("list") List<IShop> shopList);
 }
