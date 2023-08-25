@@ -1,5 +1,7 @@
 package com.oddfar.campus.business.mapper;
 
+import com.oddfar.campus.business.domain.ShopInventoryReq;
+import com.oddfar.campus.business.domain.ShopInventoryRes;
 import com.oddfar.campus.business.entity.IIShopItemInventory;
 import com.oddfar.campus.common.core.BaseMapperX;
 import org.apache.ibatis.annotations.Param;
@@ -26,4 +28,12 @@ public interface IShopItemInventoryMapper extends BaseMapperX<IIShopItemInventor
      * @param shopList 购物清单
      */
     void inserts(@Param("list") List<IIShopItemInventory> shopList);
+
+    /**
+     * 商店库存
+     *
+     * @param req 要求事情
+     * @return {@code List<ShopInventoryRes>}
+     */
+    List<ShopInventoryRes> shopInventory(@Param("req") ShopInventoryReq req);
 }

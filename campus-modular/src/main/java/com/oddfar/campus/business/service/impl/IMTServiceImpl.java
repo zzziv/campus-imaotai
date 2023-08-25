@@ -77,7 +77,7 @@ public class IMTServiceImpl implements IMTService {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                refreshAll();
+//                refreshAll();
             }
         }).start();
 
