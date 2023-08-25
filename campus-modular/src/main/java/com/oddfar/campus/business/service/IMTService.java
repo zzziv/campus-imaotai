@@ -72,4 +72,8 @@ public interface IMTService {
     void appointmentResults();
 
 
+    /**
+     * 得到所有区域库存
+     */
+    void getAllAreaInventory();
 }

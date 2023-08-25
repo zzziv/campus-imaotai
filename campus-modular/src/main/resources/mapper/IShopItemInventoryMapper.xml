@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.oddfar.campus.business.mapper.IShopItemInventoryMapper">
+
+    <!-- 添加多条数据 -->
+    <insert id="inserts" parameterType="java.util.List" >
+        INSERT INTO i_shop_item_inventory
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            i_shop_id, item_id, inventory, max_reserve_count, default_reserve_count, create_time
+        </trim>
+        VALUES
+        <foreach collection="list" item="item" separator="," >
+            <trim prefix="(" suffix=")" suffixOverrides="," >
+                #{item.iShopId}, #{item.itemId}, #{item.inventory}, #{item.maxReserveCount}, #{item.defaultReserveCount}, #{item.createTime},
+            </trim>
+        </foreach>
+    </insert>
+</mapper>

@@ -28,7 +28,6 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -84,14 +83,8 @@ public class IShopServiceImpl implements IShopService {
             JSONObject shop = jsonObject.getJSONObject(iShopId);
 
             return new IShop(iShopId, shop);
-        }).collect(Collectors.toList());
+        }).filter(shop -> StringUtils.isNotEmpty(shop.getProvinceName())).collect(Collectors.toList());
 
-//        List<IShop> shopList = new ArrayList<>();
-//        for (String iShopId : shopIdSet) {
-//            JSONObject shop = jsonObject.getJSONObject(iShopId);
-//            IShop iShop = new IShop(iShopId, shop);
-//            iShopMapper.insert(iShop);
-//        }
         if (!shopList.isEmpty()) {
             iShopMapper.inserts(shopList);
         }
@@ -181,8 +174,16 @@ public class IShopServiceImpl implements IShopService {
             for (Object item : items) {
                 JSONObject itemObj = (JSONObject) item;
                 if (itemObj.getString("itemId").equals(itemId)) {
-                    IMTItemInfo iItem = new IMTItemInfo(shops.getString("shopId"),
-                            itemObj.getIntValue("count"), itemObj.getString("itemId"), itemObj.getIntValue("inventory"));
+                    IMTItemInfo iItem = new IMTItemInfo();
+
+                    iItem.setInventory(itemObj.getIntValue("inventory"));
+                    iItem.setShopId(shops.getString("shopId"));
+                    iItem.setCount(itemObj.getIntValue("count"));
+                    iItem.setItemId(itemObj.getString("itemId"));
+                    iItem.setMaxReserveCount(itemObj.getIntValue("maxReserveCount"));
+                    iItem.setDefaultReserveCount(itemObj.getIntValue("defaultReserveCount"));
+
+
                     //添加
                     imtItemInfoList.add(iItem);
                 }

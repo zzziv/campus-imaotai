@@ -13,7 +13,13 @@ import cn.hutool.http.Method;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
+import com.oddfar.campus.business.domain.IMTItemInfo;
+import com.oddfar.campus.business.entity.IIShopItemInventory;
+import com.oddfar.campus.business.entity.IItem;
+import com.oddfar.campus.business.entity.IShop;
 import com.oddfar.campus.business.entity.IUser;
+import com.oddfar.campus.business.mapper.IItemMapper;
+import com.oddfar.campus.business.mapper.IShopItemInventoryMapper;
 import com.oddfar.campus.business.mapper.IUserMapper;
 import com.oddfar.campus.business.service.IMTLogFactory;
 import com.oddfar.campus.business.service.IMTService;
@@ -24,36 +30,38 @@ import com.oddfar.campus.common.exception.ServiceException;
 import com.oddfar.campus.common.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class IMTServiceImpl implements IMTService {
 
     private static final Logger logger = LoggerFactory.getLogger(IMTServiceImpl.class);
 
-    @Autowired
+    @Resource
     private IUserMapper iUserMapper;
+    @Resource
+    private IItemMapper itemMapper;
+    @Resource
+    private IShopItemInventoryMapper shopItemInventoryMapper;
 
-    @Autowired
+    @Resource
     private RedisCache redisCache;
 
-    @Autowired
+    @Resource
     private IUserService iUserService;
-    @Autowired
+    @Resource
     private IShopService iShopService;
 
     private final static String SALT = "2af72f100c356273d46284f6fd1dfc08";
@@ -611,5 +619,43 @@ public class IMTServiceImpl implements IMTService {
         return md5;
     }
 
+
+    /**
+     * 得到所有区域库存
+     */
+    @Override
+    public void getAllAreaInventory() {
+        shopItemInventoryMapper.truncateShopItemInventory();
+        Date current = new Date();
+
+        List<IItem> iItems = itemMapper.selectList();
+        List<IShop> iShops = iShopService.selectShopList();
+
+        Set<String> provinceList = iShops.stream().collect(Collectors.groupingBy(IShop::getProvinceName)).keySet();
+
+        for (String provinceName : provinceList) {
+            List<IIShopItemInventory> inventoryList = new ArrayList<>();
+            for (IItem iItem : iItems) {
+                // 获取所有省份
+                List<IMTItemInfo> shopList = iShopService.getShopsByProvince(provinceName, iItem.getItemCode());
+
+                List<IIShopItemInventory> collect = shopList.stream().map(s -> {
+                    IIShopItemInventory inventory = new IIShopItemInventory();
+                    inventory.setItemId(s.getItemId());
+                    inventory.setIShopId(s.getShopId());
+                    inventory.setInventory(s.getInventory());
+                    inventory.setMaxReserveCount(s.getMaxReserveCount());
+                    inventory.setDefaultReserveCount(s.getDefaultReserveCount());
+                    inventory.setCreateTime(current);
+
+                    return inventory;
+                }).collect(Collectors.toList());
+
+                inventoryList.addAll(collect);
+            }
+            shopItemInventoryMapper.inserts(inventoryList);
+        }
+
+    }
 
 }
