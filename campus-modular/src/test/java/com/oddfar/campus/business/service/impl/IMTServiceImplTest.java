@@ -1,6 +1,7 @@
 package com.oddfar.campus.business.service.impl;
 
 import com.oddfar.campus.business.service.IMTService;
+import com.oddfar.campus.business.service.IShopService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,10 +20,10 @@ import javax.annotation.Resource;
 public class IMTServiceImplTest {
 
     @Resource
-    private IMTService imtService;
+    private IShopService shopService;
 
     @Test
-    public void getAllAreaInventory() {
-        imtService.getAllAreaInventory();
+    public void refreshAllAreaInventory() {
+        shopService.refreshAllAreaInventory();
     }
 }

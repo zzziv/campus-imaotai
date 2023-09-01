@@ -9,6 +9,13 @@ import lombok.Data;
  */
 @Data
 public class ShopInventoryRes {
+
+
+    /**
+     * 我店id
+     */
+    private String iShopId;
+
     /**
      * 商品code
      */
@@ -63,4 +70,14 @@ public class ShopInventoryRes {
      * 商品图片
      */
     private String picture;
+
+    /**
+     * 最大储备数量
+     */
+    private Integer maxReserveCount;
+
+    /**
+     * 默认储备数量
+     */
+    private Integer defaultReserveCount;
 }

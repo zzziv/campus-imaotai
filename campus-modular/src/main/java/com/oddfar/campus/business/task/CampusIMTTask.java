@@ -77,14 +77,4 @@ public class CampusIMTTask {
         imtService.appointmentResults();
     }
 
-
-    /**
-     * 00:00分获取所有地区投放产品和数量
-     */
-    @Async
-    @Scheduled(cron = "0 10 0 ? * * ")
-    public void getAllAreaInventory() {
-        imtService.getAllAreaInventory();
-    }
-
 }

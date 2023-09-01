@@ -76,10 +76,4 @@ public interface IMTService {
      * 每日预约申购结果
      */
     void appointmentResults();
-
-
-    /**
-     * 得到所有区域库存
-     */
-    void getAllAreaInventory();
 }

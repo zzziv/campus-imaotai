@@ -1,9 +1,7 @@
 package com.oddfar.campus.business.controller;
 
-import com.oddfar.campus.business.domain.ShopInventoryReq;
 import com.oddfar.campus.business.entity.IItem;
 import com.oddfar.campus.business.mapper.IItemMapper;
-import com.oddfar.campus.business.mapper.IShopItemInventoryMapper;
 import com.oddfar.campus.business.service.IShopService;
 import com.oddfar.campus.common.annotation.ApiResource;
 import com.oddfar.campus.common.domain.R;
@@ -30,8 +28,6 @@ public class IItemController {
     private IItemMapper iItemMapper;
     @Resource
     private IShopService iShopService;
-    @Resource
-    private IShopItemInventoryMapper inventoryMapper;
 
     /**
      * 查询I茅台预约商品列列表
@@ -53,14 +49,7 @@ public class IItemController {
         return R.ok();
     }
 
-    /**
-     * 刷新i茅台预约商品列表
-     */
-    @GetMapping(value = "/shop/inventory", name = "刷新i茅台预约商品列表")
-    @PreAuthorize("@ss.resourceAuth()")
-    public R shopInventory(ShopInventoryReq req) {
-        return R.ok(inventoryMapper.shopInventory(req));
-    }
+
 
 
 }

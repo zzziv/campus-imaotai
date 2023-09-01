@@ -30,6 +30,7 @@ import com.oddfar.campus.common.exception.ServiceException;
 import com.oddfar.campus.common.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -53,8 +54,6 @@ public class IMTServiceImpl implements IMTService {
     private IUserMapper iUserMapper;
     @Resource
     private IItemMapper itemMapper;
-    @Resource
-    private IShopItemInventoryMapper shopItemInventoryMapper;
 
     @Resource
     private RedisCache redisCache;
@@ -617,45 +616,6 @@ public class IMTServiceImpl implements IMTService {
             e.printStackTrace();
         }
         return md5;
-    }
-
-
-    /**
-     * 得到所有区域库存
-     */
-    @Override
-    public void getAllAreaInventory() {
-        shopItemInventoryMapper.truncateShopItemInventory();
-        Date current = new Date();
-
-        List<IItem> iItems = itemMapper.selectList();
-        List<IShop> iShops = iShopService.selectShopList();
-
-        Set<String> provinceList = iShops.stream().collect(Collectors.groupingBy(IShop::getProvinceName)).keySet();
-
-        for (String provinceName : provinceList) {
-            List<IIShopItemInventory> inventoryList = new ArrayList<>();
-            for (IItem iItem : iItems) {
-                // 获取所有省份
-                List<IMTItemInfo> shopList = iShopService.getShopsByProvince(provinceName, iItem.getItemCode());
-
-                List<IIShopItemInventory> collect = shopList.stream().map(s -> {
-                    IIShopItemInventory inventory = new IIShopItemInventory();
-                    inventory.setItemId(s.getItemId());
-                    inventory.setIShopId(s.getShopId());
-                    inventory.setInventory(s.getInventory());
-                    inventory.setMaxReserveCount(s.getMaxReserveCount());
-                    inventory.setDefaultReserveCount(s.getDefaultReserveCount());
-                    inventory.setCreateTime(current);
-
-                    return inventory;
-                }).collect(Collectors.toList());
-
-                inventoryList.addAll(collect);
-            }
-            shopItemInventoryMapper.inserts(inventoryList);
-        }
-
     }
 
 }

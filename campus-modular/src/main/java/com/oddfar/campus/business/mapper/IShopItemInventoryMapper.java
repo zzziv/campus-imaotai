@@ -36,4 +36,12 @@ public interface IShopItemInventoryMapper extends BaseMapperX<IIShopItemInventor
      * @return {@code List<ShopInventoryRes>}
      */
     List<ShopInventoryRes> shopInventory(@Param("req") ShopInventoryReq req);
+
+    /**
+     * 商店库存数
+     *
+     * @param req 要求事情
+     * @return {@code List<ShopInventoryRes>}
+     */
+    Integer shopInventoryCount(@Param("req") ShopInventoryReq req);
 }

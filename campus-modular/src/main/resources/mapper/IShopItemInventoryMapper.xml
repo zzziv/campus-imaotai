@@ -17,14 +17,39 @@
         </foreach>
     </insert>
 
+    <select id="shopInventoryCount" resultType="integer">
+        SELECT count(*)
+        FROM i_shop s
+        LEFT OUTER JOIN i_shop_item_inventory isii ON s.i_shop_id = isii.i_shop_id
+        LEFT JOIN i_item ii ON isii.item_id = ii.item_code
+        <where>
+            <if test="req.provinceName != null and req.provinceName !=''">
+                AND s.province_name = #{req.provinceName}
+            </if>
+            <if test="req.cityName != null and req.cityName !=''">
+                AND s.city_name = #{req.cityName}
+            </if>
+            <if test="req.districtName != null and req.districtName !=''">
+                AND s.district_name = #{req.districtName}
+            </if>
+            <if test="req.itemCode != null and req.itemCode !=''">
+                AND ii.item_code = #{req.itemCode}
+            </if>
+        </where>
+    </select>
+
     <select id="shopInventory" resultType="com.oddfar.campus.business.domain.ShopInventoryRes">
-        SELECT s.province_name,
+        SELECT
+        s.i_shop_id,
+        s.province_name,
         s.city_name,
         s.district_name,
+        isii.inventory,
+        isii.max_reserve_count,
+        isii.default_reserve_count,
         s.name,
         s.full_address,
         s.tenant_name,
-        isii.inventory,
         ii.item_code,
         ii.title,
         ii.content,
@@ -46,7 +71,9 @@
                 AND ii.item_code = #{req.itemCode}
             </if>
         </where>
-        ORDER BY isii.inventory DESC
+        ORDER BY isii.inventory DESC,
+        isii.max_reserve_count DESC ,
+        isii.default_reserve_count DESC
         LIMIT #{req.pageNum} , #{req.pageSize}
     </select>
 

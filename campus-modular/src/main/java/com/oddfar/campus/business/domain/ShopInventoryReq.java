@@ -35,4 +35,9 @@ public class ShopInventoryReq {
     public Integer getPageNum() {
         return (pageNum - 1) * pageSize;
     }
+
+    public void setPageNum(Integer pageNum) {
+        this.pageNum = pageNum == null || pageNum <= 0 ? 1 : pageNum;
+    }
+
 }

@@ -10,9 +10,11 @@ import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.oddfar.campus.business.domain.IMTItemInfo;
 import com.oddfar.campus.business.domain.MapPoint;
+import com.oddfar.campus.business.entity.IIShopItemInventory;
 import com.oddfar.campus.business.entity.IItem;
 import com.oddfar.campus.business.entity.IShop;
 import com.oddfar.campus.business.mapper.IItemMapper;
+import com.oddfar.campus.business.mapper.IShopItemInventoryMapper;
 import com.oddfar.campus.business.mapper.IShopMapper;
 import com.oddfar.campus.business.service.IShopService;
 import com.oddfar.campus.common.core.RedisCache;
@@ -23,11 +25,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,9 +41,25 @@ public class IShopServiceImpl extends ServiceImpl<IShopMapper, IShop> implements
     IShopMapper iShopMapper;
     @Autowired
     IItemMapper iItemMapper;
-
+    @Resource
+    private IShopItemInventoryMapper shopItemInventoryMapper;
     @Autowired
     RedisCache redisCache;
+
+
+    /**
+     * 项目启动时，初始化数据
+     */
+    @PostConstruct
+    public void init() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                refreshAllAreaInventory();
+            }
+        }).start();
+
+    }
 
     @Override
     public List<IShop> selectShopList() {
@@ -50,7 +68,7 @@ public class IShopServiceImpl extends ServiceImpl<IShopMapper, IShop> implements
 
         if (shopList != null && shopList.size() > 0) {
             return shopList;
-        }else {
+        } else {
             refreshShop();
         }
 
@@ -291,5 +309,44 @@ public class IShopServiceImpl extends ServiceImpl<IShopMapper, IShop> implements
         //计算两点之间距离   6378137.0 取自WGS84标准参考椭球中的地球长半径(单位:m)
         return 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(latDifference / 2), 2)
                 + Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin(lonDifference / 2), 2))) * 6378137.0;
+    }
+
+
+    /**
+     * 得到所有区域库存
+     */
+    @Override
+    public void refreshAllAreaInventory() {
+        shopItemInventoryMapper.truncateShopItemInventory();
+        Date current = new Date();
+
+        List<IItem> iItems = iItemMapper.selectList();
+        List<IShop> iShops = this.selectShopList();
+
+        Set<String> provinceList = iShops.stream().collect(Collectors.groupingBy(IShop::getProvinceName)).keySet();
+
+        for (String provinceName : provinceList) {
+            List<IIShopItemInventory> inventoryList = new ArrayList<>();
+            for (IItem iItem : iItems) {
+                // 获取所有省份
+                List<IMTItemInfo> shopList = this.getShopsByProvince(provinceName, iItem.getItemCode());
+
+                List<IIShopItemInventory> collect = shopList.stream().map(s -> {
+                    IIShopItemInventory inventory = new IIShopItemInventory();
+                    inventory.setItemId(s.getItemId());
+                    inventory.setIShopId(s.getShopId());
+                    inventory.setInventory(s.getInventory());
+                    inventory.setMaxReserveCount(s.getMaxReserveCount());
+                    inventory.setDefaultReserveCount(s.getDefaultReserveCount());
+                    inventory.setCreateTime(current);
+
+                    return inventory;
+                }).collect(Collectors.toList());
+
+                inventoryList.addAll(collect);
+            }
+            shopItemInventoryMapper.inserts(inventoryList);
+        }
+
     }
 }

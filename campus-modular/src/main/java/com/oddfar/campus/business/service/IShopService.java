@@ -45,4 +45,5 @@ public interface IShopService extends IService<IShop> {
     String getShopId(int shopType, String itemId, String province, String city, String lat, String lng);
 
 
+    void refreshAllAreaInventory();
 }
