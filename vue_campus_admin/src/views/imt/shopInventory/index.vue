@@ -218,8 +218,6 @@ export default {
   created() {
     this.getList();
     this.getItemList();
-    console.log(this.getList())
-    console.log(this.getItemList())
   },
   methods: {
     /** 查询i茅台商品列表 */
