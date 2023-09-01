@@ -23,6 +23,9 @@
         LEFT OUTER JOIN i_shop_item_inventory isii ON s.i_shop_id = isii.i_shop_id
         LEFT JOIN i_item ii ON isii.item_id = ii.item_code
         <where>
+            <if test="req.ishopId != null and req.ishopId !=''">
+                AND s.i_shop_id = #{req.ishopId}
+            </if>
             <if test="req.provinceName != null and req.provinceName !=''">
                 AND s.province_name = #{req.provinceName}
             </if>
@@ -58,6 +61,9 @@
         LEFT OUTER JOIN i_shop_item_inventory isii ON s.i_shop_id = isii.i_shop_id
         LEFT JOIN i_item ii ON isii.item_id = ii.item_code
         <where>
+            <if test="req.ishopId != null and req.ishopId !=''">
+                AND s.i_shop_id = #{req.ishopId}
+            </if>
             <if test="req.provinceName != null and req.provinceName !=''">
                 AND s.province_name = #{req.provinceName}
             </if>

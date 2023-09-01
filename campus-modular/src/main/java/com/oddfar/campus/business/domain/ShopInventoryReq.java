@@ -10,6 +10,11 @@ import lombok.Data;
 @Data
 public class ShopInventoryReq {
     /**
+     * 店铺ID
+     */
+    private String ishopId;
+
+    /**
      * 商品code
      */
     private String itemCode;

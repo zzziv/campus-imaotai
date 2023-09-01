@@ -29,26 +29,10 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="城市" prop="cityName">
+      <el-form-item label="店铺ID" prop="ishopId">
         <el-input
-          v-model="queryParams.cityName"
-          placeholder="请输入城市"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="地区" prop="districtName">
-        <el-input
-          v-model="queryParams.districtName"
-          placeholder="请输入地区"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="公司名称" prop="tenantName">
-        <el-input
-          v-model="queryParams.tenantName"
-          placeholder="请输入公司名称"
+          v-model="queryParams.ishopId"
+          placeholder="请输入店铺ID"
           clearable
           @keyup.enter.native="handleQuery"
         />
