@@ -45,38 +45,6 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <!-- <el-form-item label="完整地址" prop="fullAddress">
-        <el-input
-          v-model="queryParams.fullAddress"
-          placeholder="请输入完整地址"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
-      <!-- <el-form-item label="纬度" prop="lat">
-        <el-input
-          v-model="queryParams.lat"
-          placeholder="请输入纬度"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="经度" prop="lng">
-        <el-input
-          v-model="queryParams.lng"
-          placeholder="请输入经度"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
-      <!-- <el-form-item label="名称" prop="name">
-        <el-input
-          v-model="queryParams.name"
-          placeholder="请输入名称"
-          clearable
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item> -->
       <el-form-item label="公司名称" prop="tenantName">
         <el-input
           v-model="queryParams.tenantName"
@@ -120,8 +88,6 @@
       v-loading="loading"
       :data="shopList"
     >
-      <!-- <el-table-column type="selection" width="55" align="center" /> -->
-      <!-- <el-table-column label="ID" align="center" prop="shopId" /> -->
       <el-table-column label="店铺ID" align="center" prop="ishopId" />
       <el-table-column label="省份" align="center" prop="provinceName" />
       <el-table-column label="城市" align="center" prop="cityName" />
@@ -141,25 +107,6 @@
       <el-table-column label="库存" align="center" prop="inventory" />
       <el-table-column label="最大储备数量" align="center" prop="maxReserveCount" />
       <el-table-column label="默认储备数量" align="center" prop="defaultReserveCount" />
-
-      <!-- <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
-            v-hasPermi="['system:shop:edit']"
-          >修改</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
-            v-hasPermi="['system:shop:remove']"
-          >删除</el-button>
-        </template>
-      </el-table-column> -->
     </el-table>
 
     <pagination
