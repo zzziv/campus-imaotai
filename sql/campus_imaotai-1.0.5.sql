@@ -550,6 +550,17 @@ CREATE TABLE `sys_user` (
                             PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1686027685614125058 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci COMMENT='用户信息表';
 
+CREATE TABLE i_shop_item_inventory
+(
+    i_shop_id             VARCHAR(255) NULL COMMENT '商品ID',
+    item_id               BIGINT       NULL COMMENT 'I茅台预约商品列表ID',
+    inventory             INT          NULL COMMENT '出货数量',
+    max_reserve_count     INT          NULL COMMENT '最大储备量',
+    default_reserve_count INT          NULL COMMENT '默认储备数',
+    create_time           DATETIME     NULL COMMENT '创建时间'
+)
+    COMMENT 'I茅台门店出货数量表' CHARSET = utf8;
+
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
